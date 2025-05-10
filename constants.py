@@ -1,10 +1,10 @@
 import os
-#from kivy.config import Config
+from kivy.config import Config
 width, height = 1920, 1080
 
-#Config.set('graphics','width',width)
-#Config.set('graphics','height',height)
-#Config.set('graphics','fullscreen','True')
+Config.set('graphics','width',width)
+Config.set('graphics','height',height)
+Config.set('graphics','fullscreen','True')
 USER = "SOULAYMA"
 BOT = "BETA"
 EMAIL = os.environ.get("EMAIL")
@@ -19,5 +19,5 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 SMTP_URL = os.environ.get("SMTP_URL")
 SMTP_PORT = os.environ.get("SMTP_PORT")
 
-#SCREEN_WIDTH = Config.getint('graphics','width')
-#SCREEN_HEIGHT = Config.getint('graphics','height')
+SCREEN_WIDTH = Config.getint('graphics','width')
+SCREEN_HEIGHT = Config.getint('graphics','height')

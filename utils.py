@@ -1,5 +1,6 @@
 from idlelib import query
 import cv2
+import ctypes
 import pygame
 import pyttsx3
 import speech_recognition as sr
@@ -32,12 +33,16 @@ from constants import(
 
 engine = pyttsx3.init('sapi5')
 engine.setProperty('rate', 225)
-engine.setProperty('volume', 1.5)
+engine.setProperty('volume', 1.0)
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
+
+speak_lock = threading.Lock()
+
 def speak(text):
-    engine.say(text)
-    engine.runAndWait()
+    with speak_lock:
+        engine.say(text)
+        engine.runAndWait()
 
 
 def is_valid_time_format(time_str):
@@ -52,9 +57,15 @@ alarm_triggered = False  # Global or outer-scope variable
 
 def set_alarm(alarm_time_str):
     def alarm():
+        while True:
+            current_time = datetime.now().strftime("%H:%M")
+            if current_time == alarm_time_str:
+                print("⏰ Alarm ringing!")
+                play_alarm_sound()
+                break
+            time.sleep(1)
 
-        print("⏰ Alarm ringing!")
-        play_alarm_sound()
+    threading.Thread(target=alarm).start()
 
 def play_alarm_sound():
     pygame.mixer.init()
@@ -62,6 +73,21 @@ def play_alarm_sound():
     pygame.mixer.music.play()
     while pygame.mixer.music.get_busy():
         pass  # Keeps script running while the sound plays
+
+def set_volume(level):
+    volume = max(0, min(level, 100))  # Clamp between 0-100
+    devices = ctypes.windll.user32.SendMessageW
+    # Use pycaw or third-party libs for per-app or device-specific control
+    from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+    from comtypes import CLSCTX_ALL
+    from ctypes import cast, POINTER
+    from pycaw.utils import AudioUtilities
+
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume_interface = cast(interface, POINTER(IAudioEndpointVolume))
+    volume_interface.SetMasterVolumeLevelScalar(volume / 100.0, None)
+
 
 
 def take_photo():

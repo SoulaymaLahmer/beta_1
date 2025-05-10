@@ -1,3 +1,4 @@
+'''
 import pyttsx3
 import speech_recognition as sr
 import keyboard
@@ -8,6 +9,7 @@ import wolframalpha
 import google.generativeai as genai
 import time
 import threading
+import re
 import screen_brightness_control as sbc
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
@@ -18,19 +20,12 @@ from datetime import datetime
 from random import choice
 from conv import random_text
 from constants import USER, BOT
-from utils import find_my_ip, search_on_google, search_on_wikipedia, youtube, send_email, get_news, weather_forecast, close_camera, take_photo,speak, set_alarm, is_valid_time_format,alarm_triggered
+from utils import find_my_ip, search_on_google, search_on_wikipedia, youtube, send_email, get_news, weather_forecast, close_camera, take_photo,speak, set_alarm, is_valid_time_format,alarm_triggered,set_volume
 
 genai.configure(api_key="AIzaSyBa5w2uFKLiZexIf-HVdM0Bs5qqt8jtV9o")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-def set_volume(level):
-    devices = AudioUtilities.GetSpeakers()
-    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-    volume = cast(interface, POINTER(IAudioEndpointVolume))
-    volume.SetMasterVolumeLevelScalar(level / 100, None)
 
-def set_brightness(level):
-    sbc.set_brightness(level)
 
 def greet_me():
     hour = datetime.now().hour
@@ -115,13 +110,6 @@ if __name__ == '__main__':
                 except:
                     speak("Sorry, I couldn't set the volume.")
 
-            elif "set the brightness to" in query:
-                try:
-                    level = int(query.split("set brightness to")[-1].strip().replace("%", ""))
-                    set_brightness(level)
-                    speak(f"Brightness set to {level} percent")
-                except:
-                    speak("Sorry, I couldn't set the brightness.")
 
             elif "open command prompt" in query:
                     speak("Opening command prompt")
@@ -281,7 +269,7 @@ if __name__ == '__main__':
                 speak("Closing camera")
                 close_camera()
 
-            elif "take photo" in query or "take a picture" in query:
+            elif "take a photo" in query or "take a picture" in query:
                 speak("Opening camera to take a photo. Press SPACE to capture.")
                 take_photo()
 
@@ -300,7 +288,7 @@ if __name__ == '__main__':
                 if gemini_response and gemini_response != "I'm sorry, I couldn't process that request.":
                     speak(gemini_response)
                     print(gemini_response)
-
+'''
 
 
 
